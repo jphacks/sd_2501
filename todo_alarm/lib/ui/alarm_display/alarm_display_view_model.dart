@@ -56,7 +56,23 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
 
   DateTime _timeOfDayToDateTime(TimeOfDay time) {
     final now = DateTime.now();
-    return DateTime(now.year, now.month, now.day, time.hour, time.minute);
+    var alarmDateTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      time.hour,
+      time.minute,
+    );
+
+    // 選択した時刻が現在時刻より前の場合は、翌日に設定
+    if (alarmDateTime.isBefore(now)) {
+      alarmDateTime = alarmDateTime.add(Duration(days: 1));
+      print(
+        "ui/alarm_display/alarm_display_view_model.dart: Selected time is in the past, setting for tomorrow: $alarmDateTime",
+      );
+    }
+
+    return alarmDateTime;
   }
 
   // View向けのメソッド: アラームの更新

@@ -1,9 +1,16 @@
+import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_alarm/ui/add_todo_item_page/add_todo_item_page.dart';
 import 'package:todo_alarm/ui/alarm_todo_page/alarm_todo_page.dart';
 
-void main() {
+Future<void> main() async {
+  // Flutterのバインディングを初期化
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Alarmパッケージの初期化（これがないとアラームが鳴らない）
+  await Alarm.init();
+
   runApp(ProviderScope(child: MainApp()));
 }
 
