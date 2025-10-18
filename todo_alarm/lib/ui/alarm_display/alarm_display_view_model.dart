@@ -17,6 +17,8 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
 
   // プライベートメソッド: データ取得を共通化
   Future<AlarmModel?> _fetchAlarm() async {
+    if (!ref.mounted) return null;
+
     final repository = ref
         .read(alarmLocalDBRepositoryProvider.notifier)
         .build();
@@ -38,7 +40,7 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
   }) async {
     state = const AsyncValue.loading();
 
-    state = await AsyncValue.guard(() async {
+    try {
       final repository = ref
           .read(alarmLocalDBRepositoryProvider.notifier)
           .build();
@@ -50,8 +52,18 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
       );
 
       await repository.saveAlarm(newAlarm);
-      return await _fetchAlarm();
-    });
+
+      // 保存したデータを直接返す
+      final result = await repository.getAlarm();
+
+      if (ref.mounted) {
+        state = AsyncValue.data(result);
+      }
+    } catch (error, stackTrace) {
+      if (ref.mounted) {
+        state = AsyncValue.error(error, stackTrace);
+      }
+    }
   }
 
   DateTime _timeOfDayToDateTime(TimeOfDay time) {
@@ -79,16 +91,26 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
   Future<void> setAlarmTime(DateTime newTime) async {
     state = const AsyncValue.loading();
 
-    state = await AsyncValue.guard(() async {
+    try {
       final repository = ref
           .read(alarmLocalDBRepositoryProvider.notifier)
           .build();
+
       await repository.setDateTime(newTime);
       print(
         "ui/alarm_display/alarm_display_view_model.dart: Updated alarm time to $newTime",
       );
-      return await _fetchAlarm();
-    });
+
+      final result = await repository.getAlarm();
+
+      if (ref.mounted) {
+        state = AsyncValue.data(result);
+      }
+    } catch (error, stackTrace) {
+      if (ref.mounted) {
+        state = AsyncValue.error(error, stackTrace);
+      }
+    }
   }
 
   // View向けのメソッド: アラーム時刻の変更
@@ -97,11 +119,10 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
 
     state = const AsyncValue.loading();
 
-    state = await AsyncValue.guard(() async {
+    try {
       final alarmLocalDBrepository = ref
           .read(alarmLocalDBRepositoryProvider.notifier)
           .build();
-
       final alarmRepository = ref.read(alarmRepositoryProvider);
 
       final DateTime alarmDateTime = _timeOfDayToDateTime(newTime);
@@ -134,8 +155,16 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
         );
       }
 
-      return await _fetchAlarm();
-    });
+      final result = await alarmLocalDBrepository.getAlarm();
+
+      if (ref.mounted) {
+        state = AsyncValue.data(result);
+      }
+    } catch (error, stackTrace) {
+      if (ref.mounted) {
+        state = AsyncValue.error(error, stackTrace);
+      }
+    }
   }
 
   // View向けのメソッド: アラームの有効/無効切り替え
@@ -145,16 +174,26 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
 
     state = const AsyncValue.loading();
 
-    state = await AsyncValue.guard(() async {
+    try {
       final repository = ref
           .read(alarmLocalDBRepositoryProvider.notifier)
           .build();
+
       final updatedAlarm = currentAlarm.copyWith(
         isEnabled: !currentAlarm.isEnabled,
       );
       await repository.saveAlarm(updatedAlarm);
-      return await _fetchAlarm();
-    });
+
+      final result = await repository.getAlarm();
+
+      if (ref.mounted) {
+        state = AsyncValue.data(result);
+      }
+    } catch (error, stackTrace) {
+      if (ref.mounted) {
+        state = AsyncValue.error(error, stackTrace);
+      }
+    }
   }
 
   // View向けの便利メソッド: アラームが設定されているか確認
