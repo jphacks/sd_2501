@@ -1,10 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'todo_item_model.freezed.dart';
-part 'todo_item_model.g.dart';
+part '../../generated/repositories/model/todo_item_model.freezed.dart';
+part '../../generated/repositories/model/todo_item_model.g.dart';
 
 @freezed
-class TodoItemModel with _$TodoItemModel {
+abstract class TodoItemModel with _$TodoItemModel {
   const factory TodoItemModel({
     required String id,
     required String title,

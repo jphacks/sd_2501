@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'model/todo_item_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'todo_localdb_repository.g.dart';
+part '../generated/repositories/todo_localdb_repository.g.dart';
 
 @riverpod
 class TodoLocalDbRepository extends _$TodoLocalDbRepository {
@@ -12,15 +12,14 @@ class TodoLocalDbRepository extends _$TodoLocalDbRepository {
     return TodoLocalDbRepositoryImpl();
   }
 }
+
 class TodoLocalDbRepositoryImpl {
   Future<List<TodoItemModel>> getTodos() async {
     final prefs = await SharedPreferences.getInstance();
     final todosJson = prefs.getString('todos');
     if (todosJson != null) {
       final List<dynamic> todoList = json.decode(todosJson);
-      return todoList
-          .map((todo) => TodoItemModel.fromJson(todo))
-          .toList();
+      return todoList.map((todo) => TodoItemModel.fromJson(todo)).toList();
     }
     return [];
   }
@@ -50,14 +49,14 @@ class TodoLocalDbRepositoryImpl {
   }
 
   Future<void> toggleCompleted(String id) async {
-  final prefs = await SharedPreferences.getInstance();
-  final todos = await getTodos();
-  final index = todos.indexWhere((t) => t.id == id);
-  if (index != -1) {
-    todos[index] = todos[index].copyWith(
-      isCompleted: !todos[index].isCompleted,
-    );
-    await prefs.setString('todos', json.encode(todos));
+    final prefs = await SharedPreferences.getInstance();
+    final todos = await getTodos();
+    final index = todos.indexWhere((t) => t.id == id);
+    if (index != -1) {
+      todos[index] = todos[index].copyWith(
+        isCompleted: !todos[index].isCompleted,
+      );
+      await prefs.setString('todos', json.encode(todos));
     }
   }
 }
