@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_alarm/ui/add_todo_item_page/add_todo_item_page.dart';
 import 'package:todo_alarm/ui/alarm_todo_page/alarm_todo_page.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(ProviderScope(child: MainApp()));
 }
 
 class MainApp extends StatelessWidget {

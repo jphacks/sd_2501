@@ -8,11 +8,15 @@ class AddTodoItemPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: const Text('Todoアイテムを追加')),
-      body: Column(
-        children: [
-          TextField(decoration: const InputDecoration(labelText: 'やること')),
-          ElevatedButton(onPressed: () {}, child: const Text('追加')),
-        ],
+      body: Padding(
+        padding: EdgeInsetsGeometry.all(16.0),
+        child: Column(
+          children: [
+            TextField(decoration: const InputDecoration(labelText: 'やること')),
+            SizedBox(height: 16.0),
+            ElevatedButton(onPressed: () {}, child: const Text('追加')),
+          ],
+        ),
       ),
     );
   }
