@@ -14,9 +14,6 @@ class AlarmDisplay extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final alarmViewModelRepository = ref.read(
-      alarmDisplayViewModelProvider.notifier,
-    );
     final selectedTime = useState(const TimeOfDay(hour: 6, minute: 30));
 
     Future<void> selectTime() async {
@@ -26,7 +23,11 @@ class AlarmDisplay extends HookConsumerWidget {
       );
       if (picked != null && picked != selectedTime.value) {
         selectedTime.value = picked;
-        alarmViewModelRepository.updateAlarmTime(picked);
+
+        // 非同期処理の中でref.readを使用（ウィジェットが破棄された場合のエラーを防ぐ）
+        ref
+            .read(alarmDisplayViewModelProvider.notifier)
+            .updateAlarmTime(picked);
       }
     }
 
