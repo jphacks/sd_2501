@@ -20,6 +20,8 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
     final repository = ref
         .read(alarmLocalDBRepositoryProvider.notifier)
         .build();
+
+    print("ui/alarm_display/alarm_display_view_model.dart: Fetched alarm data");
     return await repository.getAlarm();
   }
 
@@ -66,6 +68,9 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
           .read(alarmLocalDBRepositoryProvider.notifier)
           .build();
       await repository.setDateTime(newTime);
+      print(
+        "ui/alarm_display/alarm_display_view_model.dart: Updated alarm time to $newTime",
+      );
       return await _fetchAlarm();
     });
   }
@@ -86,9 +91,13 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
 
       final DateTime alarmDateTime = _timeOfDayToDateTime(newTime);
 
+      print(
+        "ui/alarm_display/alarm_display_view_model.dart: Updating alarm time to $alarmDateTime",
+      );
       await alarmRepository.setAlarm(alarmDateTime);
       final updatedAlarm = currentAlarm.copyWith(alarmTime: alarmDateTime);
       await alarmLocalDBrepository.saveAlarm(updatedAlarm);
+
       return await _fetchAlarm();
     });
   }

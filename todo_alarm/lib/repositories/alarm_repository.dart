@@ -34,8 +34,13 @@ class AlarmRepositoryImpl {
   );
 
   Future<void> setAlarm(DateTime dateTime) async {
+    print("repositories/alarm_repository.dart: Setting alarm for $dateTime");
     await Alarm.set(
       alarmSettings: alarmSettings.copyWith(id: 0, dateTime: dateTime),
+    );
+
+    print(
+      "repositories/alarm_repository.dart: Setting alarm for $dateTime completed",
     );
   }
 
