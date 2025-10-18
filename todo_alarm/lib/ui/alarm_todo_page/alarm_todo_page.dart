@@ -16,7 +16,9 @@ class AlarmTodoPage extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, '/add_todo');
+        },
         child: const Icon(Icons.add),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_alarm/ui/add_todo_item_page/add_todo_item_page.dart';
 import 'package:todo_alarm/ui/alarm_todo_page/alarm_todo_page.dart';
 
 void main() {
@@ -10,6 +11,12 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: AlarmTodoPage());
+    return MaterialApp(
+      routes: {
+        '/alarm_todo': (context) => AlarmTodoPage(),
+        '/add_todo': (context) => AddTodoItemPage(),
+      },
+      home: AlarmTodoPage(),
+    );
   }
 }
