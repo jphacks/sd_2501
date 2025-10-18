@@ -78,7 +78,6 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
   // View向けのメソッド: アラーム時刻の変更
   Future<void> updateAlarmTime(TimeOfDay newTime) async {
     final currentAlarm = state.value;
-    if (currentAlarm == null) return;
 
     state = const AsyncValue.loading();
 
@@ -94,9 +93,30 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
       print(
         "ui/alarm_display/alarm_display_view_model.dart: Updating alarm time to $alarmDateTime",
       );
+
+      // alarmRepositoryでアラームを設定（これが実際にアラームを鳴らすために必要）
       await alarmRepository.setAlarm(alarmDateTime);
-      final updatedAlarm = currentAlarm.copyWith(alarmTime: alarmDateTime);
-      await alarmLocalDBrepository.saveAlarm(updatedAlarm);
+
+      // アラームが存在しない場合は新規作成、存在する場合は更新
+      if (currentAlarm == null) {
+        // 新規作成
+        final newAlarm = AlarmModel(
+          id: const Uuid().v4(),
+          alarmTime: alarmDateTime,
+          isEnabled: true,
+        );
+        await alarmLocalDBrepository.saveAlarm(newAlarm);
+        print(
+          "ui/alarm_display/alarm_display_view_model.dart: Created new alarm",
+        );
+      } else {
+        // 既存のアラームを更新
+        final updatedAlarm = currentAlarm.copyWith(alarmTime: alarmDateTime);
+        await alarmLocalDBrepository.saveAlarm(updatedAlarm);
+        print(
+          "ui/alarm_display/alarm_display_view_model.dart: Updated existing alarm",
+        );
+      }
 
       return await _fetchAlarm();
     });
