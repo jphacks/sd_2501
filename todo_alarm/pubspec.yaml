@@ -10,6 +10,7 @@ dependencies:
   alarm: ^5.1.5
   flutter:
     sdk: flutter
+  flutter_hooks: ^0.21.3+1
   freezed: ^3.2.3
   freezed_annotation: ^3.1.0
   hooks_riverpod: ^3.0.3
