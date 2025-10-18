@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todo_alarm/ui/alarm_display/alarm_display_view_model.dart';
 
 class AlarmDisplay extends HookConsumerWidget {
   const AlarmDisplay({super.key});
@@ -13,6 +14,9 @@ class AlarmDisplay extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final alarmViewModelRepository = ref.read(
+      alarmDisplayViewModelProvider.notifier,
+    );
     final selectedTime = useState(const TimeOfDay(hour: 6, minute: 30));
 
     Future<void> selectTime() async {
@@ -22,6 +26,7 @@ class AlarmDisplay extends HookConsumerWidget {
       );
       if (picked != null && picked != selectedTime.value) {
         selectedTime.value = picked;
+        alarmViewModelRepository.updateAlarmTime(picked);
       }
     }
 

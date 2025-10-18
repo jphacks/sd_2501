@@ -15,33 +15,27 @@ class AlarmRepository extends _$AlarmRepository {
 
 class AlarmRepositoryImpl {
   final AlarmSettings alarmSettings = AlarmSettings(
-    id: 1,
+    id: 0,
     dateTime: DateTime.now().add(Duration(seconds: 10)),
     loopAudio: true,
     vibrate: true,
-    assetAudioPath: 'assets/alarms/alarm.mp3',
+    assetAudioPath: 'assets/alarms/bell.mp3',
     volumeSettings: VolumeSettings.fade(
       volume: 0.8,
       fadeDuration: Duration(seconds: 5),
       volumeEnforced: true,
     ),
     notificationSettings: const NotificationSettings(
-      title: 'This is the title',
+      title: 'おはようございます！',
       body: 'アプリを開きアラームを停止してください',
       icon: 'notification_icon',
       iconColor: Color(0xff862778),
     ),
   );
 
-  Future<void> setAlarm(DateTime dateTime, String title) async {
+  Future<void> setAlarm(DateTime dateTime) async {
     await Alarm.set(
-      alarmSettings: alarmSettings.copyWith(
-        id: 0,
-        dateTime: dateTime,
-        notificationSettings: alarmSettings.notificationSettings.copyWith(
-          title: title,
-        ),
-      ),
+      alarmSettings: alarmSettings.copyWith(id: 0, dateTime: dateTime),
     );
   }
 

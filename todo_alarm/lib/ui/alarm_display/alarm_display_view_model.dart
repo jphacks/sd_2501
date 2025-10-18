@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:todo_alarm/repositories/alarm_localdb_repository.dart';
+import 'package:todo_alarm/repositories/alarm_repository.dart';
 import 'package:todo_alarm/repositories/model/alarm_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
@@ -15,7 +17,9 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
 
   // プライベートメソッド: データ取得を共通化
   Future<AlarmModel?> _fetchAlarm() async {
-    final repository = ref.read(alarmLocalDBRepositoryProvider.notifier).build();
+    final repository = ref
+        .read(alarmLocalDBRepositoryProvider.notifier)
+        .build();
     return await repository.getAlarm();
   }
 
@@ -31,45 +35,60 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
     String? label,
   }) async {
     state = const AsyncValue.loading();
-    
+
     state = await AsyncValue.guard(() async {
-      final repository = ref.read(alarmLocalDBRepositoryProvider.notifier).build();
-      
+      final repository = ref
+          .read(alarmLocalDBRepositoryProvider.notifier)
+          .build();
+
       final newAlarm = AlarmModel(
         id: const Uuid().v4(),
         alarmTime: alarmTime,
         isEnabled: isEnabled,
       );
-      
+
       await repository.saveAlarm(newAlarm);
       return await _fetchAlarm();
     });
   }
 
+  DateTime _timeOfDayToDateTime(TimeOfDay time) {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day, time.hour, time.minute);
+  }
+
   // View向けのメソッド: アラームの更新
-  Future<void> updateAlarm(AlarmModel alarm) async {
+  Future<void> setAlarmTime(DateTime newTime) async {
     state = const AsyncValue.loading();
-    
+
     state = await AsyncValue.guard(() async {
-      final repository = ref.read(alarmLocalDBRepositoryProvider.notifier).build();
-      await repository.saveAlarm(alarm.copyWith());
+      final repository = ref
+          .read(alarmLocalDBRepositoryProvider.notifier)
+          .build();
+      await repository.setDateTime(newTime);
       return await _fetchAlarm();
     });
   }
 
   // View向けのメソッド: アラーム時刻の変更
-  Future<void> updateAlarmTime(DateTime newTime) async {
+  Future<void> updateAlarmTime(TimeOfDay newTime) async {
     final currentAlarm = state.value;
     if (currentAlarm == null) return;
 
     state = const AsyncValue.loading();
-    
+
     state = await AsyncValue.guard(() async {
-      final repository = ref.read(alarmLocalDBRepositoryProvider.notifier).build();
-      final updatedAlarm = currentAlarm.copyWith(
-        alarmTime: newTime,
-      );
-      await repository.saveAlarm(updatedAlarm);
+      final alarmLocalDBrepository = ref
+          .read(alarmLocalDBRepositoryProvider.notifier)
+          .build();
+
+      final alarmRepository = ref.read(alarmRepositoryProvider);
+
+      final DateTime alarmDateTime = _timeOfDayToDateTime(newTime);
+
+      await alarmRepository.setAlarm(alarmDateTime);
+      final updatedAlarm = currentAlarm.copyWith(alarmTime: alarmDateTime);
+      await alarmLocalDBrepository.saveAlarm(updatedAlarm);
       return await _fetchAlarm();
     });
   }
@@ -80,9 +99,11 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
     if (currentAlarm == null) return;
 
     state = const AsyncValue.loading();
-    
+
     state = await AsyncValue.guard(() async {
-      final repository = ref.read(alarmLocalDBRepositoryProvider.notifier).build();
+      final repository = ref
+          .read(alarmLocalDBRepositoryProvider.notifier)
+          .build();
       final updatedAlarm = currentAlarm.copyWith(
         isEnabled: !currentAlarm.isEnabled,
       );
@@ -91,13 +112,9 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
     });
   }
 
-
   // View向けの便利メソッド: アラームが設定されているか確認
   bool hasAlarm() {
-    return state.maybeWhen(
-      data: (alarm) => alarm != null,
-      orElse: () => false,
-    );
+    return state.maybeWhen(data: (alarm) => alarm != null, orElse: () => false);
   }
 
   // View向けの便利メソッド: アラームが有効か確認
