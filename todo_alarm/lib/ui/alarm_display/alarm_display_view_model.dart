@@ -15,7 +15,7 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
 
   // プライベートメソッド: データ取得を共通化
   Future<AlarmModel?> _fetchAlarm() async {
-    final repository = ref.read(alarmLocalDBRepositoryProvider).notifier.build();
+    final repository = ref.read(alarmLocalDBRepositoryProvider.notifier).build();
     return await repository.getAlarm();
   }
 
@@ -33,20 +33,12 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
     state = const AsyncValue.loading();
     
     state = await AsyncValue.guard(() async {
-      final repository = ref.read(alarmLocalDBRepositoryProvider).notifier.build();
+      final repository = ref.read(alarmLocalDBRepositoryProvider.notifier).build();
       
       final newAlarm = AlarmModel(
         id: const Uuid().v4(),
-        todoId: todoId,
         alarmTime: alarmTime,
         isEnabled: isEnabled,
-        isRepeating: isRepeating,
-        repeatDays: repeatDays,
-        sound: sound,
-        vibrate: vibrate,
-        label: label,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
       );
       
       await repository.saveAlarm(newAlarm);
@@ -59,9 +51,8 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
     state = const AsyncValue.loading();
     
     state = await AsyncValue.guard(() async {
-      final repository = ref.read(alarmLocalDBRepositoryProvider).notifier.build();
-      final updatedAlarm = alarm.copyWith(updatedAt: DateTime.now());
-      await repository.saveAlarm(updatedAlarm);
+      final repository = ref.read(alarmLocalDBRepositoryProvider.notifier).build();
+      await repository.saveAlarm(alarm.copyWith());
       return await _fetchAlarm();
     });
   }
@@ -74,10 +65,9 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
     state = const AsyncValue.loading();
     
     state = await AsyncValue.guard(() async {
-      final repository = ref.read(alarmLocalDBRepositoryProvider).notifier.build();
+      final repository = ref.read(alarmLocalDBRepositoryProvider.notifier).build();
       final updatedAlarm = currentAlarm.copyWith(
         alarmTime: newTime,
-        updatedAt: DateTime.now(),
       );
       await repository.saveAlarm(updatedAlarm);
       return await _fetchAlarm();
@@ -92,10 +82,9 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
     state = const AsyncValue.loading();
     
     state = await AsyncValue.guard(() async {
-      final repository = ref.read(alarmLocalDBRepositoryProvider).notifier.build();
+      final repository = ref.read(alarmLocalDBRepositoryProvider.notifier).build();
       final updatedAlarm = currentAlarm.copyWith(
         isEnabled: !currentAlarm.isEnabled,
-        updatedAt: DateTime.now(),
       );
       await repository.saveAlarm(updatedAlarm);
       return await _fetchAlarm();

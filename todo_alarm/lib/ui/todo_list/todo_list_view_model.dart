@@ -15,7 +15,7 @@ class TodoListViewModel extends _$TodoListViewModel {
 
   // プライベートメソッド: データ取得を共通化
   Future<List<TodoItemModel>> _fetchTodos() async {
-    final repository = ref.read(todoLocalDbRepositoryProvider).notifier.build();
+    final repository = ref.read(todoLocalDbRepositoryProvider.notifier).build();
     return await repository.getTodos();
   }
 
@@ -29,7 +29,7 @@ class TodoListViewModel extends _$TodoListViewModel {
     state = const AsyncValue.loading();
     
     state = await AsyncValue.guard(() async {
-      final repository = ref.read(todoLocalDbRepositoryProvider).notifier.build();
+      final repository = ref.read(todoLocalDbRepositoryProvider.notifier).build();
       
       // ViewModelでTodoItemModelを生成(Viewは構造を知らなくて良い)
       final newTodo = TodoItemModel(
@@ -48,7 +48,7 @@ class TodoListViewModel extends _$TodoListViewModel {
     state = const AsyncValue.loading();
     
     state = await AsyncValue.guard(() async {
-      final repository = ref.read(todoLocalDbRepositoryProvider).notifier.build();
+      final repository = ref.read(todoLocalDbRepositoryProvider.notifier).build();
       await repository.updateTodo(todo);
       return await _fetchTodos();
     });
@@ -59,7 +59,7 @@ class TodoListViewModel extends _$TodoListViewModel {
     state = const AsyncValue.loading();
     
     state = await AsyncValue.guard(() async {
-      final repository = ref.read(todoLocalDbRepositoryProvider).notifier.build();
+      final repository = ref.read(todoLocalDbRepositoryProvider.notifier).build();
       await repository.deleteTodo(id);
       return await _fetchTodos();
     });
@@ -70,7 +70,7 @@ class TodoListViewModel extends _$TodoListViewModel {
     state = const AsyncValue.loading();
     
     state = await AsyncValue.guard(() async {
-      final repository = ref.read(todoLocalDbRepositoryProvider).notifier.build();
+      final repository = ref.read(todoLocalDbRepositoryProvider.notifier).build();
       await repository.toggleCompleted(id);
       return await _fetchTodos();
     });
