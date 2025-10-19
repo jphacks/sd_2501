@@ -34,7 +34,7 @@ class TodoListViewModel extends _$TodoListViewModel {
       final newTodo = TodoItemModel(
         id: const Uuid().v4(),
         title: title.trim(),
-        status: TodoStatus.notStarted, // enum に変更
+        status: TodoStatus.notStarted,
       );
       
       await repository.addTodo(newTodo);
@@ -96,7 +96,15 @@ class TodoListViewModel extends _$TodoListViewModel {
     
     state = await AsyncValue.guard(() async {
       final repository = ref.read(todoLocalDbRepositoryProvider.notifier).build();
-      await repository.toggleCompleted(id);
+      final todos = await repository.getTodos();
+      final todo = todos.firstWhere((t) => t.id == id);
+
+      // 完了 → 未完了、未完了・取り組み中 → 完了のトグル
+      final newStatus = todo.isCompleted
+          ? TodoStatus.notStarted
+          : TodoStatus.completed;
+
+      await repository.updateStatus(id, newStatus);
       return await _fetchTodos();
     });
   }

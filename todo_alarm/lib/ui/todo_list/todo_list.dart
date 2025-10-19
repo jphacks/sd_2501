@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_alarm/ui/todo_list/todo_list_view_model.dart';
 import 'package:todo_alarm/repositories/model/todo_status.dart';
-import 'package:todo_alarm/repositories/model/todo_item_model.dart'; // この行を追加
+import 'package:todo_alarm/repositories/model/todo_item_model.dart';
 
 class TodoList extends HookConsumerWidget {
   const TodoList({super.key});
@@ -50,29 +50,7 @@ class TodoList extends HookConsumerWidget {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // ステータス変更ボタン
-                      PopupMenuButton<TodoStatus>(
-                        icon: const Icon(Icons.more_vert),
-                        onSelected: (TodoStatus newStatus) {
-                          ref.read(todoListViewModelProvider.notifier)
-                            .updateStatus(todo.id, newStatus);
-                        },
-                        itemBuilder: (BuildContext context) => [
-                          PopupMenuItem(
-                            value: TodoStatus.notStarted,
-                            child: Text(TodoStatus.notStarted.displayName),
-                          ),
-                          PopupMenuItem(
-                            value: TodoStatus.inProgress,
-                            child: Text(TodoStatus.inProgress.displayName),
-                          ),
-                          PopupMenuItem(
-                            value: TodoStatus.completed,
-                            child: Text(TodoStatus.completed.displayName),
-                          ),
-                        ],
-                      ),
-                      // 削除ボタン
+                      // 削除ボタンのみ
                       IconButton(
                         icon: const Icon(Icons.delete),
                         onPressed: () {
@@ -82,21 +60,12 @@ class TodoList extends HookConsumerWidget {
                       ),
                     ],
                   ),
-                  // チェックボックスはステータスに応じて表示
+                  // チェックボックスは完了⇔未完了のトグルのみ
                   leading: Checkbox(
                     value: todo.isCompleted,
-                    tristate: true,
                     onChanged: (value) {
-                      if (todo.isCompleted) {
-                        ref.read(todoListViewModelProvider.notifier)
-                          .markAsNotStarted(todo.id);
-                      } else if (todo.isInProgress) {
-                        ref.read(todoListViewModelProvider.notifier)
-                          .markAsCompleted(todo.id);
-                      } else {
-                        ref.read(todoListViewModelProvider.notifier)
-                          .markAsInProgress(todo.id);
-                      }
+                      ref.read(todoListViewModelProvider.notifier)
+                        .toggleCompleted(todo.id);
                     },
                   ),
                 ),
