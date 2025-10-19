@@ -41,6 +41,7 @@ Future<void> main() async {
 
   // Android 12+ で必要な正確なアラームのスケジュール権限を確認
   await _checkPermissions();
+import 'package:todo_alarm/ui/voice_recognition/voice_recognition_page.dart';
 
   runApp(ProviderScope(child: MainApp()));
 }
@@ -76,6 +77,7 @@ class MainApp extends StatelessWidget {
       routes: {
         '/alarm_todo': (context) => AlarmTodoPage(),
         '/add_todo': (context) => AddTodoItemPage(),
+        '/voice_recognition': (context) => VoiceRecognitionPage(),
       },
       home: AlarmTodoPage(),
     );

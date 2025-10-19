@@ -10,12 +10,20 @@ _TodoItemModel _$TodoItemModelFromJson(Map<String, dynamic> json) =>
     _TodoItemModel(
       id: json['id'] as String,
       title: json['title'] as String,
-      isCompleted: json['isCompleted'] as bool,
+      status:
+          $enumDecodeNullable(_$TodoStatusEnumMap, json['status']) ??
+          TodoStatus.notStarted,
     );
 
 Map<String, dynamic> _$TodoItemModelToJson(_TodoItemModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'title': instance.title,
-      'isCompleted': instance.isCompleted,
+      'status': _$TodoStatusEnumMap[instance.status]!,
     };
+
+const _$TodoStatusEnumMap = {
+  TodoStatus.notStarted: 'notStarted',
+  TodoStatus.inProgress: 'inProgress',
+  TodoStatus.completed: 'completed',
+};
