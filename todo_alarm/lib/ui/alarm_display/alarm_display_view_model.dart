@@ -221,4 +221,109 @@ class AlarmDisplayViewModel extends _$AlarmDisplayViewModel {
       orElse: () => null,
     );
   }
+
+  // カウントダウンでアラームを設定
+  Future<void> setCountdownAlarm(int seconds) async {
+    state = const AsyncValue.loading();
+
+    try {
+      final repository = ref
+          .read(alarmLocalDBRepositoryProvider.notifier)
+          .build();
+      final alarmRepository = ref
+          .read(alarmRepositoryProvider.notifier)
+          .build();
+
+      // 現在時刻から指定秒数後のDateTimeを計算
+      final alarmDateTime = DateTime.now().add(Duration(seconds: seconds));
+
+      print(
+        "ui/alarm_display/alarm_display_view_model.dart: Setting countdown alarm for $seconds seconds (at $alarmDateTime)",
+      );
+
+      // アラームを設定
+      await alarmRepository.setAlarm(alarmDateTime);
+
+      // カウントダウン情報を保存
+      await repository.setCountdownSeconds(seconds);
+      await repository.setIsCountdownMode(true);
+
+      // アラームモデルを作成・保存
+      final currentAlarm = await repository.getAlarm();
+      if (currentAlarm == null) {
+        final newAlarm = AlarmModel(
+          id: const Uuid().v4(),
+          alarmTime: alarmDateTime,
+          isEnabled: true,
+        );
+        await repository.saveAlarm(newAlarm);
+      } else {
+        final updatedAlarm = currentAlarm.copyWith(alarmTime: alarmDateTime);
+        await repository.saveAlarm(updatedAlarm);
+      }
+
+      final result = await repository.getAlarm();
+      if (ref.mounted) {
+        state = AsyncValue.data(result);
+      }
+
+      print("ui/alarm_display/alarm_display_view_model.dart: Countdown alarm set successfully");
+    } catch (error, stackTrace) {
+      if (ref.mounted) {
+        state = AsyncValue.error(error, stackTrace);
+      }
+    }
+  }
+
+  // カウントダウンをキャンセル
+  Future<void> cancelCountdown() async {
+    state = const AsyncValue.loading();
+
+    try {
+      final repository = ref
+          .read(alarmLocalDBRepositoryProvider.notifier)
+          .build();
+      final alarmRepository = ref
+          .read(alarmRepositoryProvider.notifier)
+          .build();
+
+      // アラームを停止
+      await alarmRepository.stopAlarm();
+
+      // カウントダウンモードをオフ
+      await repository.setIsCountdownMode(false);
+
+      final result = await repository.getAlarm();
+      if (ref.mounted) {
+        state = AsyncValue.data(result);
+      }
+
+      print("ui/alarm_display/alarm_display_view_model.dart: Countdown cancelled");
+    } catch (error, stackTrace) {
+      if (ref.mounted) {
+        state = AsyncValue.error(error, stackTrace);
+      }
+    }
+  }
+
+  // カウントダウンモードかどうかを確認
+  Future<bool> isCountdownMode() async {
+    final repository = ref
+        .read(alarmLocalDBRepositoryProvider.notifier)
+        .build();
+    return await repository.getIsCountdownMode();
+  }
+
+  // 残り時間を取得（秒）
+  int? getRemainingSeconds() {
+    return state.maybeWhen(
+      data: (alarm) {
+        if (alarm == null || !alarm.isEnabled) return null;
+        final now = DateTime.now();
+        final difference = alarm.alarmTime.difference(now);
+        return difference.inSeconds > 0 ? difference.inSeconds : 0;
+      },
+      orElse: () => null,
+    );
+  }
 }
