@@ -5,6 +5,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:todo_alarm/ui/add_todo_item_page/add_todo_item_page.dart';
 import 'package:todo_alarm/ui/alarm_todo_page/alarm_todo_page.dart';
 import 'package:todo_alarm/ui/ringing_alarm_page/ringing_alarm_page.dart';
+import 'package:todo_alarm/ui/voice_recognition/voice_recognition_page.dart';
+
 
 // グローバルナビゲーターキー
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -41,8 +43,6 @@ Future<void> main() async {
 
   // Android 12+ で必要な正確なアラームのスケジュール権限を確認
   await _checkPermissions();
-import 'package:todo_alarm/ui/voice_recognition/voice_recognition_page.dart';
-
   runApp(ProviderScope(child: MainApp()));
 }
 
