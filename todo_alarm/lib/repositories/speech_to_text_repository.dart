@@ -50,8 +50,8 @@ class SpeechToTextRepositoryImpl {
           onResult(_lastRecognizedWords!);
         }
       },
-      listenFor: const Duration(seconds: 30),
-      pauseFor: const Duration(seconds: 3),
+      listenFor: const Duration(seconds: 60),
+      pauseFor: const Duration(seconds: 10),
       localeId: 'ja_JP', // 日本語対応
     );
   }
@@ -65,7 +65,7 @@ class SpeechToTextRepositoryImpl {
   // 音声認識結果の処理
   void _onSpeechResult(SpeechRecognitionResult result) {
     _lastRecognizedWords = result.recognizedWords;
-  }
+    }
 
   // VoiceModelを生成
   VoiceModel createVoiceRecord({
