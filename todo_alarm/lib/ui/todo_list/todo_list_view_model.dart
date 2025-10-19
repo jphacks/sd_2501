@@ -1,7 +1,9 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_alarm/repositories/todo_localdb_repository.dart';
 import 'package:todo_alarm/repositories/model/todo_item_model.dart';
 import 'package:todo_alarm/repositories/model/todo_status.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:todo_alarm/services/discord_webhook_service.dart';
 import 'package:uuid/uuid.dart';
 
 part '../../generated/ui/todo_list/todo_list_view_model.g.dart';
@@ -13,6 +15,15 @@ class TodoListViewModel extends _$TodoListViewModel {
     // Repositoryから初期データを取得
     return _fetchTodos();
   }
+
+    static const String _webhookUrlKey = 'webhook_url';
+
+  // メソッドをstaticに変更
+  static Future<String?> _loadWebhookUrl() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_webhookUrlKey);
+  }
+
 
   // プライベートメソッド: データ取得を共通化
   Future<List<TodoItemModel>> _fetchTodos() async {
@@ -104,6 +115,15 @@ class TodoListViewModel extends _$TodoListViewModel {
           ? TodoStatus.notStarted
           : TodoStatus.completed;
 
+      if(!todo.isCompleted){
+        final webhookUrl = await _loadWebhookUrl();
+        print("Webhook URL: $webhookUrl");
+        if (webhookUrl != null && webhookUrl.isNotEmpty) {
+          print('Sending Discord webhook for completed todo: ${todo.title}');
+          final discordService = DiscordWebhookService(webhookUrl: webhookUrl);
+          discordService.send(text: '✅ Todo完了: ${todo.title}');
+        }
+      }
       await repository.updateStatus(id, newStatus);
       return await _fetchTodos();
     });
