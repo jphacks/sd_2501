@@ -34,8 +34,8 @@ class TodoListViewModel extends _$TodoListViewModel {
 
   // 期限切れチェックを定期的に実行
   void _startDeadlineCheck() {
-    // 1分ごとに期限切れをチェック
-    Future.delayed(const Duration(minutes: 1), () async {
+    // 3秒ごとに期限切れをチェック
+    Future.delayed(const Duration(seconds: 3), () async {
       if (!ref.mounted) return;
       await _checkAndUpdateOverdueTodos();
       _startDeadlineCheck(); // 再帰的に呼び出し
