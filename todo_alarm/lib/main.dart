@@ -34,7 +34,7 @@ Future<void> main() async {
 
       navigatorKey.currentState?.push(
         MaterialPageRoute(
-          builder: (context) => RingingAlarmPage(alarmSettings: firstAlarm),
+          builder: (context) => VoiceRecognitionPage(),
           fullscreenDialog: true, // フルスクリーンで表示
         ),
       );
