@@ -6,7 +6,7 @@ import 'package:todo_alarm/ui/add_todo_item_page/add_todo_item_page.dart';
 import 'package:todo_alarm/ui/alarm_todo_page/alarm_todo_page.dart';
 import 'package:todo_alarm/ui/ringing_alarm_page/ringing_alarm_page.dart';
 import 'package:todo_alarm/ui/voice_recognition/voice_recognition_page.dart';
-
+import 'package:todo_alarm/ui/settings/settings_page.dart';
 
 // グローバルナビゲーターキー
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -73,11 +73,12 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorKey: navigatorKey, // グローバルキーを設定
+      navigatorKey: navigatorKey,
       routes: {
         '/alarm_todo': (context) => AlarmTodoPage(),
         '/add_todo': (context) => AddTodoItemPage(),
         '/voice_recognition': (context) => VoiceRecognitionPage(),
+        '/settings': (context) => SettingsPage(),
       },
       home: AlarmTodoPage(),
     );
