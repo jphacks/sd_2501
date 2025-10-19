@@ -29,7 +29,6 @@ class RingingAlarmPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16),
-
               Text(
                 '${alarmSettings.dateTime.hour.toString().padLeft(2, '0')}:${alarmSettings.dateTime.minute.toString().padLeft(2, '0')}',
                 style: TextStyle(
@@ -39,7 +38,6 @@ class RingingAlarmPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 64),
-
               // 停止ボタン
               ElevatedButton(
                 onPressed: () async {
@@ -62,34 +60,6 @@ class RingingAlarmPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16),
-
-              // スヌーズボタン（オプション）
-              OutlinedButton(
-                onPressed: () async {
-                  final now = DateTime.now();
-                  await Alarm.set(
-                    alarmSettings: alarmSettings.copyWith(
-                      dateTime: now.add(Duration(minutes: 5)),
-                    ),
-                  );
-                  await Alarm.stop(alarmSettings.id);
-                  if (context.mounted) {
-                    Navigator.of(context).pop();
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text('5分後に再度アラームが鳴ります')));
-                  }
-                },
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  side: BorderSide(color: Colors.white, width: 2),
-                  padding: EdgeInsets.symmetric(horizontal: 48, vertical: 20),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-                child: Text('スヌーズ (5分)', style: TextStyle(fontSize: 20)),
-              ),
             ],
           ),
         ),
