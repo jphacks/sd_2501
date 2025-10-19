@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TodoItemModel {
 
- String get id; String get title; bool get isCompleted;
+ String get id; String get title; TodoStatus get status;
 /// Create a copy of TodoItemModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $TodoItemModelCopyWith<TodoItemModel> get copyWith => _$TodoItemModelCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodoItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.isCompleted, isCompleted) || other.isCompleted == isCompleted));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodoItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.status, status) || other.status == status));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,isCompleted);
+int get hashCode => Object.hash(runtimeType,id,title,status);
 
 @override
 String toString() {
-  return 'TodoItemModel(id: $id, title: $title, isCompleted: $isCompleted)';
+  return 'TodoItemModel(id: $id, title: $title, status: $status)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $TodoItemModelCopyWith<$Res>  {
   factory $TodoItemModelCopyWith(TodoItemModel value, $Res Function(TodoItemModel) _then) = _$TodoItemModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, bool isCompleted
+ String id, String title, TodoStatus status
 });
 
 
@@ -65,12 +65,12 @@ class _$TodoItemModelCopyWithImpl<$Res>
 
 /// Create a copy of TodoItemModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? isCompleted = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? status = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String,isCompleted: null == isCompleted ? _self.isCompleted : isCompleted // ignore: cast_nullable_to_non_nullable
-as bool,
+as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as TodoStatus,
   ));
 }
 
@@ -155,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  bool isCompleted)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  TodoStatus status)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TodoItemModel() when $default != null:
-return $default(_that.id,_that.title,_that.isCompleted);case _:
+return $default(_that.id,_that.title,_that.status);case _:
   return orElse();
 
 }
@@ -176,10 +176,10 @@ return $default(_that.id,_that.title,_that.isCompleted);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  bool isCompleted)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  TodoStatus status)  $default,) {final _that = this;
 switch (_that) {
 case _TodoItemModel():
-return $default(_that.id,_that.title,_that.isCompleted);case _:
+return $default(_that.id,_that.title,_that.status);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +196,10 @@ return $default(_that.id,_that.title,_that.isCompleted);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  bool isCompleted)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  TodoStatus status)?  $default,) {final _that = this;
 switch (_that) {
 case _TodoItemModel() when $default != null:
-return $default(_that.id,_that.title,_that.isCompleted);case _:
+return $default(_that.id,_that.title,_that.status);case _:
   return null;
 
 }
@@ -211,12 +211,12 @@ return $default(_that.id,_that.title,_that.isCompleted);case _:
 @JsonSerializable()
 
 class _TodoItemModel implements TodoItemModel {
-  const _TodoItemModel({required this.id, required this.title, required this.isCompleted});
+  const _TodoItemModel({required this.id, required this.title, this.status = TodoStatus.notStarted});
   factory _TodoItemModel.fromJson(Map<String, dynamic> json) => _$TodoItemModelFromJson(json);
 
 @override final  String id;
 @override final  String title;
-@override final  bool isCompleted;
+@override@JsonKey() final  TodoStatus status;
 
 /// Create a copy of TodoItemModel
 /// with the given fields replaced by the non-null parameter values.
@@ -231,16 +231,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodoItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.isCompleted, isCompleted) || other.isCompleted == isCompleted));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodoItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.status, status) || other.status == status));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,isCompleted);
+int get hashCode => Object.hash(runtimeType,id,title,status);
 
 @override
 String toString() {
-  return 'TodoItemModel(id: $id, title: $title, isCompleted: $isCompleted)';
+  return 'TodoItemModel(id: $id, title: $title, status: $status)';
 }
 
 
@@ -251,7 +251,7 @@ abstract mixin class _$TodoItemModelCopyWith<$Res> implements $TodoItemModelCopy
   factory _$TodoItemModelCopyWith(_TodoItemModel value, $Res Function(_TodoItemModel) _then) = __$TodoItemModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, bool isCompleted
+ String id, String title, TodoStatus status
 });
 
 
@@ -268,12 +268,12 @@ class __$TodoItemModelCopyWithImpl<$Res>
 
 /// Create a copy of TodoItemModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? isCompleted = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? status = null,}) {
   return _then(_TodoItemModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String,isCompleted: null == isCompleted ? _self.isCompleted : isCompleted // ignore: cast_nullable_to_non_nullable
-as bool,
+as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as TodoStatus,
   ));
 }
 
