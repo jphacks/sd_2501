@@ -13,6 +13,9 @@ _TodoItemModel _$TodoItemModelFromJson(Map<String, dynamic> json) =>
       status:
           $enumDecodeNullable(_$TodoStatusEnumMap, json['status']) ??
           TodoStatus.notStarted,
+      deadline: json['deadline'] == null
+          ? null
+          : DateTime.parse(json['deadline'] as String),
     );
 
 Map<String, dynamic> _$TodoItemModelToJson(_TodoItemModel instance) =>
@@ -20,10 +23,12 @@ Map<String, dynamic> _$TodoItemModelToJson(_TodoItemModel instance) =>
       'id': instance.id,
       'title': instance.title,
       'status': _$TodoStatusEnumMap[instance.status]!,
+      'deadline': instance.deadline?.toIso8601String(),
     };
 
 const _$TodoStatusEnumMap = {
   TodoStatus.notStarted: 'notStarted',
   TodoStatus.inProgress: 'inProgress',
   TodoStatus.completed: 'completed',
+  TodoStatus.overdue: 'overdue',
 };
