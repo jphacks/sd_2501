@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.21.3+1
+  flutter_launcher_icons: ^0.14.4
   freezed: ^3.2.3
   freezed_annotation: ^3.1.0
   hooks_riverpod: ^3.0.3
@@ -36,3 +37,11 @@ flutter:
   assets:
     - assets/alarms/
     - assets/images/
+
+flutter_launcher_icons:
+  android: true
+  image_path_ios: "assets/images/app_icon.png"
+  image_path_android: "assets/images/app_icon.png"
+  adaptive_icon_background: '#000000'
+  adaptive_icon_foreground: "assets/images/app_icon.png"
+  adaptive_icon_padding: true
