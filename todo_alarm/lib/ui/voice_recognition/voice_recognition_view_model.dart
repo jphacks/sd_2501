@@ -16,8 +16,10 @@ class VoiceRecognitionViewModel extends _$VoiceRecognitionViewModel {
 
   // 音声認識を開始
   Future<void> startRecognition() async {
-    final repository = ref.read(speechToTextRepositoryProvider.notifier).build();
-    
+    final repository = ref
+        .read(speechToTextRepositoryProvider.notifier)
+        .build();
+
     // 初期化
     final initialized = await repository.initialize();
     if (!initialized) {
@@ -35,7 +37,9 @@ class VoiceRecognitionViewModel extends _$VoiceRecognitionViewModel {
 
   // 音声認識を停止
   Future<void> stopRecognition() async {
-    final repository = ref.read(speechToTextRepositoryProvider.notifier).build();
+    final repository = ref
+        .read(speechToTextRepositoryProvider.notifier)
+        .build();
     await repository.stopListening();
   }
 
@@ -43,55 +47,61 @@ class VoiceRecognitionViewModel extends _$VoiceRecognitionViewModel {
   Future<void> _processRecognizedText(String recognizedText) async {
     print('📝 テキスト処理開始: $recognizedText');
     state = const AsyncValue.loading();
-    
+
     state = await AsyncValue.guard(() async {
-      final repository = ref.read(speechToTextRepositoryProvider.notifier).build();
+      final repository = ref
+          .read(speechToTextRepositoryProvider.notifier)
+          .build();
       final todos = await ref.read(todoListViewModelProvider.future);
-      
+
       // 未完了と取り組み中のTodoを対象にマッチング
-      final incompleteTodos = todos.where((todo) => 
-        todo.status != TodoStatus.completed
-      ).toList();
-      
+      final incompleteTodos = todos
+          .where((todo) => todo.status != TodoStatus.completed)
+          .toList();
+
       print('📋 未完了+取り組み中のTodo数: ${incompleteTodos.length}');
-      
+
       // Todoとのマッチング
       final matchedTodoId = repository.matchWithTodo(
         recognizedText: recognizedText,
         todos: incompleteTodos,
       );
-      
-      print('🎯 マッチ結果: ${matchedTodoId != null ? "成功" : "失敗"}');
-      
+
+      print('🎯 マッチ結果: ${matchedTodoId != null ? "成功" : "おいおい、熱意が足りないぜ？？"}');
+
       // マッチした場合は該当Todoを「取り組み中」にする
       if (matchedTodoId != null) {
         print('✅ Todoを取り組み中にします: $matchedTodoId');
-        await ref.read(todoListViewModelProvider.notifier)
-          .markAsInProgress(matchedTodoId);
+        await ref
+            .read(todoListViewModelProvider.notifier)
+            .markAsInProgress(matchedTodoId);
 
         await Alarm.stop(1);
-
       }
-      
+
       // VoiceModelを作成して履歴として保存
       final voiceRecord = repository.createVoiceRecord(
         recognizedText: recognizedText,
         matchedTodoId: matchedTodoId,
       );
-      
+
       return voiceRecord;
     });
   }
 
   // リスニング状態を取得
   bool isListening() {
-    final repository = ref.read(speechToTextRepositoryProvider.notifier).build();
+    final repository = ref
+        .read(speechToTextRepositoryProvider.notifier)
+        .build();
     return repository.isListening;
   }
 
   // 最後に認識されたテキストを取得
   String? getLastRecognizedText() {
-    final repository = ref.read(speechToTextRepositoryProvider.notifier).build();
+    final repository = ref
+        .read(speechToTextRepositoryProvider.notifier)
+        .build();
     return repository.lastRecognizedWords;
   }
 }

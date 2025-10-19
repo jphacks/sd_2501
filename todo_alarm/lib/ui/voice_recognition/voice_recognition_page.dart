@@ -12,10 +12,7 @@ class VoiceRecognitionPage extends HookConsumerWidget {
     final viewModel = ref.read(voiceRecognitionViewModelProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('音声認識'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('音声認識'), centerTitle: true),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(32.0),
@@ -24,14 +21,14 @@ class VoiceRecognitionPage extends HookConsumerWidget {
             children: [
               // 音声認識状態の表示
               _buildStatusIndicator(viewModel, voiceState),
-              
+
               const SizedBox(height: 40),
-              
+
               // マイクボタン
               _buildMicrophoneButton(viewModel),
-              
+
               const SizedBox(height: 40),
-              
+
               // 認識結果の表示
               _buildRecognitionResult(viewModel, voiceState),
             ],
@@ -47,11 +44,11 @@ class VoiceRecognitionPage extends HookConsumerWidget {
     AsyncValue<VoiceModel?> voiceState,
   ) {
     final isListening = viewModel.isListening();
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       decoration: BoxDecoration(
-        color: isListening 
+        color: isListening
             ? Colors.red.withValues(alpha: 0.1)
             : Colors.grey.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(24),
@@ -80,7 +77,7 @@ class VoiceRecognitionPage extends HookConsumerWidget {
   // マイクボタン
   Widget _buildMicrophoneButton(VoiceRecognitionViewModel viewModel) {
     final isListening = viewModel.isListening();
-    
+
     return GestureDetector(
       onTap: () async {
         if (isListening) {
@@ -97,8 +94,9 @@ class VoiceRecognitionPage extends HookConsumerWidget {
           color: isListening ? Colors.red : Colors.blue,
           boxShadow: [
             BoxShadow(
-              color: (isListening ? Colors.red : Colors.blue)
-                  .withValues(alpha: 0.3),
+              color: (isListening ? Colors.red : Colors.blue).withValues(
+                alpha: 0.3,
+              ),
               spreadRadius: isListening ? 8 : 4,
               blurRadius: 16,
             ),
@@ -124,26 +122,21 @@ class VoiceRecognitionPage extends HookConsumerWidget {
           return const Text(
             'マイクボタンをタップして\n音声認識を開始してください',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey),
           );
         }
-        
+
         return Column(
           children: [
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: voiceModel.isMatched 
+                color: voiceModel.isMatched
                     ? Colors.green.withValues(alpha: 0.1)
                     : Colors.orange.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: voiceModel.isMatched 
-                      ? Colors.green
-                      : Colors.orange,
+                  color: voiceModel.isMatched ? Colors.green : Colors.orange,
                   width: 2,
                 ),
               ),
@@ -153,22 +146,18 @@ class VoiceRecognitionPage extends HookConsumerWidget {
                   Row(
                     children: [
                       Icon(
-                        voiceModel.isMatched 
-                            ? Icons.check_circle
-                            : Icons.info,
-                        color: voiceModel.isMatched 
+                        voiceModel.isMatched ? Icons.check_circle : Icons.info,
+                        color: voiceModel.isMatched
                             ? Colors.green
                             : Colors.orange,
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        voiceModel.isMatched 
-                            ? 'マッチしました！'
-                            : '一致するTodoがありません',
+                        voiceModel.isMatched ? 'マッチしました！' : 'おいおい、熱意が足りないぜ？？',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: voiceModel.isMatched 
+                          color: voiceModel.isMatched
                               ? Colors.green
                               : Colors.orange,
                         ),
@@ -196,10 +185,8 @@ class VoiceRecognitionPage extends HookConsumerWidget {
         );
       },
       loading: () => const CircularProgressIndicator(),
-      error: (error, _) => Text(
-        'エラー: $error',
-        style: const TextStyle(color: Colors.red),
-      ),
+      error: (error, _) =>
+          Text('エラー: $error', style: const TextStyle(color: Colors.red)),
     );
   }
 }
