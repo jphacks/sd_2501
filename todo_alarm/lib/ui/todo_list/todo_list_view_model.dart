@@ -1,5 +1,6 @@
 import 'package:todo_alarm/repositories/todo_localdb_repository.dart';
 import 'package:todo_alarm/repositories/model/todo_item_model.dart';
+import 'package:todo_alarm/repositories/model/todo_status.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 
@@ -22,7 +23,6 @@ class TodoListViewModel extends _$TodoListViewModel {
   // View向けのメソッド: タイトルから新しいTodoを追加
   Future<void> addTodoFromTitle(String title) async {
     if (title.trim().isEmpty) {
-      // 空の場合は何もしない(Viewでバリデーションしても良い)
       return;
     }
 
@@ -31,17 +31,42 @@ class TodoListViewModel extends _$TodoListViewModel {
     state = await AsyncValue.guard(() async {
       final repository = ref.read(todoLocalDbRepositoryProvider.notifier).build();
       
-      // ViewModelでTodoItemModelを生成(Viewは構造を知らなくて良い)
       final newTodo = TodoItemModel(
         id: const Uuid().v4(),
         title: title.trim(),
-        isCompleted: false,
+        status: TodoStatus.notStarted, // enum に変更
       );
       
       await repository.addTodo(newTodo);
       return await _fetchTodos();
     });
-  } 
+  }
+
+  // 状態を変更するメソッド
+  Future<void> updateStatus(String id, TodoStatus newStatus) async {
+    state = const AsyncValue.loading();
+    
+    state = await AsyncValue.guard(() async {
+      final repository = ref.read(todoLocalDbRepositoryProvider.notifier).build();
+      await repository.updateStatus(id, newStatus);
+      return await _fetchTodos();
+    });
+  }
+
+  // 取り組み中にする
+  Future<void> markAsInProgress(String id) async {
+    await updateStatus(id, TodoStatus.inProgress);
+  }
+
+  // 完了にする
+  Future<void> markAsCompleted(String id) async {
+    await updateStatus(id, TodoStatus.completed);
+  }
+
+  // 未完了に戻す
+  Future<void> markAsNotStarted(String id) async {
+    await updateStatus(id, TodoStatus.notStarted);
+  }
 
   // View向けのメソッド: Todoの更新
   Future<void> updateTodo(TodoItemModel todo) async {
@@ -92,12 +117,20 @@ class TodoListViewModel extends _$TodoListViewModel {
     );
   }
 
-  // View向けの便利メソッド: フィルタリングされたTodoリストを取得
-  List<TodoItemModel> getFilteredTodos({required bool showCompleted}) {
+  // View向けの便利メソッド: ステータス別の件数を取得
+  int getCountByStatus(TodoStatus status) {
     return state.maybeWhen(
-      data: (todos) => todos.where((todo) => 
-        showCompleted ? todo.isCompleted : !todo.isCompleted
-      ).toList(),
+      data: (todos) => todos.where((todo) => todo.status == status).length,
+      orElse: () => 0,
+    );
+  }
+
+  // View向けの便利メソッド: フィルタリングされたTodoリストを取得
+  List<TodoItemModel> getFilteredTodos({TodoStatus? status}) {
+    return state.maybeWhen(
+      data: (todos) => status == null 
+          ? todos 
+          : todos.where((todo) => todo.status == status).toList(),
       orElse: () => [],
     );
   }

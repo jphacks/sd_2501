@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_alarm/ui/add_todo_item_page/add_todo_item_page.dart';
 import 'package:todo_alarm/ui/alarm_todo_page/alarm_todo_page.dart';
+import 'package:todo_alarm/ui/voice_recognition/voice_recognition_page.dart';
 
 void main() {
   runApp(ProviderScope(child: MainApp()));
@@ -16,6 +17,7 @@ class MainApp extends StatelessWidget {
       routes: {
         '/alarm_todo': (context) => AlarmTodoPage(),
         '/add_todo': (context) => AddTodoItemPage(),
+        '/voice_recognition': (context) => VoiceRecognitionPage(),
       },
       home: AlarmTodoPage(),
     );
