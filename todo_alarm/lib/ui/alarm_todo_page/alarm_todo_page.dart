@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_alarm/repositories/alarm_permission.dart';
 import 'package:todo_alarm/ui/alarm_display/alarm_display.dart';
 import 'package:todo_alarm/ui/todo_list/todo_list.dart';
 
@@ -7,6 +8,10 @@ class AlarmTodoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AlarmPermissions.checkNotificationPermission().then(
+      (_) => AlarmPermissions.checkAndroidScheduleExactAlarmPermission(),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Alarm Todo Page'),

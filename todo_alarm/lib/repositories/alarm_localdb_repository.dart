@@ -1,4 +1,4 @@
-import 'dart:convert' ;
+import 'dart:convert';
 import 'model/alarm_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -12,6 +12,7 @@ class AlarmLocalDBRepository extends _$AlarmLocalDBRepository {
     return AlarmLocalDBRepositoryImpl();
   }
 }
+
 ///aaaaa
 class AlarmLocalDBRepositoryImpl {
   Future<void> saveAlarm(AlarmModel alarm) async {
@@ -25,6 +26,8 @@ class AlarmLocalDBRepositoryImpl {
     if (alarmJson != null) {
       return AlarmModel.fromJson(jsonDecode(alarmJson));
     }
+
+    print("repositories/alarm_localdb_repository.dart: No alarm data found");
     return null;
   }
 
