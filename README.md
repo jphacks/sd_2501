@@ -1,4 +1,3 @@
-# サンプル（プロダクト名）
 # __Mokuhyo-!__
 <img width="1024" height="1024" alt="MOKUHYO" src="https://github.com/user-attachments/assets/560a4920-bc73-443f-8010-833d0ad0b891" />
 
