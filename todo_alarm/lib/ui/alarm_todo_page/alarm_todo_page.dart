@@ -16,17 +16,7 @@ class AlarmTodoPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Alarm Todo Page'),
-        actions: [
-          // 音声認識ボタン
-          IconButton(
-            icon: const Icon(Icons.mic),
-            onPressed: () {
-              Navigator.pushNamed(context, '/voice_recognition');
-            },
-            tooltip: '音声認識',
-          ),
-          // 設定ボタン（歯車アイコン）
-          IconButton(
+        leading: IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.push(
@@ -38,6 +28,17 @@ class AlarmTodoPage extends StatelessWidget {
             },
             tooltip: '設定',
           ),
+        actions: [
+          // 音声認識ボタン
+          IconButton(
+            icon: const Icon(Icons.mic),
+            onPressed: () {
+              Navigator.pushNamed(context, '/voice_recognition');
+            },
+            tooltip: '音声認識',
+          ),
+          // 設定ボタン（歯車アイコン）
+          
         ],
       ),
       body: Column(
