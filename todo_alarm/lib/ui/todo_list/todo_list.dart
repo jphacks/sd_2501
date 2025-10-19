@@ -25,26 +25,53 @@ class TodoList extends HookConsumerWidget {
           itemCount: todos.length,
           itemBuilder: (context, index) {
             final todo = todos[index];
-            
+
             return Padding(
               padding: const EdgeInsets.all(4.0),
               child: Card(
+                color: todo.isOverdue ? Colors.red.withValues(alpha: 0.1) : null,
                 child: ListTile(
                   title: Text(
                     todo.title,
                     style: TextStyle(
-                      decoration: todo.isCompleted 
-                        ? TextDecoration.lineThrough 
-                        : null,
-                      fontWeight: todo.isInProgress 
-                        ? FontWeight.bold 
-                        : FontWeight.normal,
+                      decoration: todo.isCompleted
+                          ? TextDecoration.lineThrough
+                          : null,
+                      fontWeight: todo.isInProgress
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: todo.isOverdue ? Colors.red : null,
                     ),
                   ),
-                  // ステータスを表示
-                  subtitle: Row(
+                  // ステータスと期限を表示
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildStatusChip(todo.status),
+                      if (todo.deadline != null) ...[
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.schedule,
+                              size: 14,
+                              color: todo.hasDeadlinePassed
+                                  ? Colors.red
+                                  : Colors.grey,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              _formatDeadline(todo.deadline!),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: todo.hasDeadlinePassed
+                                    ? Colors.red
+                                    : Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ],
                   ),
                   trailing: Row(
@@ -54,19 +81,23 @@ class TodoList extends HookConsumerWidget {
                       IconButton(
                         icon: const Icon(Icons.delete),
                         onPressed: () {
-                          ref.read(todoListViewModelProvider.notifier)
-                            .deleteTodo(todo.id);
+                          ref
+                              .read(todoListViewModelProvider.notifier)
+                              .deleteTodo(todo.id);
                         },
                       ),
                     ],
                   ),
-                  // チェックボックスは完了⇔未完了のトグルのみ
+                  // チェックボックスは完了⇔未完了のトグルのみ（期限切れは無効化）
                   leading: Checkbox(
                     value: todo.isCompleted,
-                    onChanged: (value) {
-                      ref.read(todoListViewModelProvider.notifier)
-                        .toggleCompleted(todo.id);
-                    },
+                    onChanged: todo.isOverdue
+                        ? null
+                        : (value) {
+                            ref
+                                .read(todoListViewModelProvider.notifier)
+                                .toggleCompleted(todo.id);
+                          },
                   ),
                 ),
               ),
@@ -77,11 +108,16 @@ class TodoList extends HookConsumerWidget {
     );
   }
 
+  String _formatDeadline(DateTime deadline) {
+    return '${deadline.year}/${deadline.month}/${deadline.day} '
+        '${deadline.hour.toString().padLeft(2, '0')}:${deadline.minute.toString().padLeft(2, '0')}';
+  }
+
   // ステータスチップを作成
   Widget _buildStatusChip(TodoStatus status) {
     Color color;
     IconData icon;
-    
+
     switch (status) {
       case TodoStatus.notStarted:
         color = Colors.grey;
@@ -95,8 +131,12 @@ class TodoList extends HookConsumerWidget {
         color = Colors.green;
         icon = Icons.check_circle;
         break;
+      case TodoStatus.overdue:
+        color = Colors.red;
+        icon = Icons.error_outline;
+        break;
     }
-    
+
     return Chip(
       avatar: Icon(icon, size: 16, color: color),
       label: Text(
