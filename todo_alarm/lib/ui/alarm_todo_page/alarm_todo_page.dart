@@ -15,7 +15,7 @@ class AlarmTodoPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Alarm Todo Page'),
+        title: Image.asset('assets/images/appbar_logo.png', height: 30),
         leading: IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
