@@ -9,27 +9,13 @@ class DiscordWebhookService {
   DiscordWebhookService({required String webhookUrl})
     : _webhookUrl = webhookUrl;
 
-  /// [username]：Discordで表示されるボットの名前。
-  /// [text]：送信したいメッセージの本文。
-  ///
   /// 成功した場合はtrue、失敗した場合はfalse
-  Future<bool> send({
-    required String username,
-    required String text,
-    String? avatarUrl, // 必要に応じてアバターURLも追加
-  }) async {
+  Future<bool> send({required String text}) async {
     try {
       final Uri url = Uri.parse(_webhookUrl);
 
       // Webhookのペイロード（送信データ）を作成
-      final Map<String, dynamic> postData = {
-        "username": username,
-        "content": text,
-      };
-      // オプションのアバターURLを追加
-      if (avatarUrl != null && avatarUrl.isNotEmpty) {
-        postData["avatar_url"] = avatarUrl;
-      }
+      final Map<String, dynamic> postData = {"content": text};
 
       // HTTPリクエストのヘッダーを設定
       final Map<String, String> headers = {'content-type': 'application/json'};
