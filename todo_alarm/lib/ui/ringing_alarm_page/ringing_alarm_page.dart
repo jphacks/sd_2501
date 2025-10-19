@@ -39,9 +39,10 @@ class RingingAlarmPage extends StatelessWidget {
               ),
               SizedBox(height: 64),
               // 停止ボタン
+              // このボタンで停止
               ElevatedButton(
                 onPressed: () async {
-                  await Alarm.stop(alarmSettings.id);
+                  await Alarm.stop(1);
                   if (context.mounted) {
                     Navigator.of(context).pop();
                   }

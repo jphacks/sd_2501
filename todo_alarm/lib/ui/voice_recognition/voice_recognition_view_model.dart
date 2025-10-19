@@ -1,3 +1,4 @@
+import 'package:alarm/alarm.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:todo_alarm/repositories/speech_to_text_repository.dart';
 import 'package:todo_alarm/repositories/model/voice_model.dart';
@@ -67,6 +68,9 @@ class VoiceRecognitionViewModel extends _$VoiceRecognitionViewModel {
         print('✅ Todoを取り組み中にします: $matchedTodoId');
         await ref.read(todoListViewModelProvider.notifier)
           .markAsInProgress(matchedTodoId);
+
+        await Alarm.stop(1);
+
       }
       
       // VoiceModelを作成して履歴として保存
